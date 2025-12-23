@@ -3,11 +3,12 @@
 1. Vuetify
 2. Element Plus
 3. Naive UI
-4. PrimeVue
-5. Argon
-6. Quasar
-7. BootstrapVue 3
-8. Tailwind + Headless UI
+4. [PrimeVue](https://primevue.org/templates)
+5. [sakai](https://sakai.primevue.org/)
+6. Argon
+7. Quasar
+8. BootstrapVue 3
+9. Tailwind + Headless UI
 
 #### 선택기준
 
