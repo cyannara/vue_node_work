@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="todo.css" rel="stylesheet" />
+</head>
+<body>
+
+<div id="myDIV" class="header">
+  <h2 style="margin:5px">My To Do List</h2>
+  <input type="text" id="myInput" placeholder="Title...">
+  <span class="addBtn">Add</span>
+</div>
+
+<ul id="myUL">
+  <li class="checked">Pay bills</li>
+</ul>
+
+<script>
+//fetch
+fetch("../todoSelect")
+.then(response => response.json())
+.then(result => {
+	//li태그 만들어서 ul태그에 추가
+	for (todo of result) {
+		newElement(todo);
+	}
+})
+
+
+// Add a "checked" symbol when clicking on a list item
+var list = document.querySelector('ul');
+list.addEventListener('click', function(ev) {
+  if (ev.target.tagName === 'LI') {
+	//var no = ____________________________
+    //var todoyn = ________________________//  checked 클래스 있으면 0, 
+    //update fecth
+	/* fetch("../todoUpdate",{
+		method: 'POST',
+		headers: {
+		      'Content-Type': 'application/x-www-form-urlencoded',
+		    },
+	//	body : _________________________   //질의문자열 no=2&todoyn=1
+	})
+	.then(response => response.json())
+	.then(result => {
+	    ev.target.classList.toggle('checked');
+	}) */
+	ev.target.classList.toggle('checked');
+  }
+}, false);
+
+document.getElementsByClassName('addBtn')[0].addEventListener('click', function(){
+	//텍스트 필드가 널이면 alert
+	let inputValue = document.getElementById('myInput');
+	if(inputValue.value == ''){
+		alert('입력하세요');
+		return
+	}
+	
+	//등록요청
+	fetch("../todoInsert",{
+		method: 'POST',
+		headers: {
+		      'Content-Type': 'application/x-www-form-urlencoded',
+		    },
+		body : "contents=" + inputValue.value
+	})
+	.then(response => response.json())
+	.then(result => {
+		newElement(result);
+	})
+})
+
+function newElement(todo) {	
+  var li = document.createElement("li");
+  li.innerHTML = todo.contents;
+  li.setAttribute('data-no', todo.no);
+  if(todo.todoyn == 1 ) {
+	  //'checked' 클래스 추가
+	  li.className = 'checked'
+  }
+  document.getElementById("myUL").appendChild(li);
+
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  li.appendChild(span);
+
+  span.onclick = function() {
+      var li = this.parentElement;
+      var no = li.getAttribute('data-no');  //data-no 속성을 읽기
+      fetch("../todoDelete?no=" + no )  //서버에 삭제 요청
+      .then( response => response.json() )      // json 변환
+      .then( result => { li.remove();  } )  // //li 태그 삭제
+  }  
+}
+</script>
+
+</body>
+</html>

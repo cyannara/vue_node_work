@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    {{msg}}
+    <div @click="parentevent">
+      <div @click.stop="childevent">event test</div>
+    </div>
+    <form>
+      <input>
+      <button @click.prevent="addOrder">구매</button>
+    </form>
+    <a href="http://www.naver.com" @click.prevent="addCart">장바구니</a>
+  </div>
+  <script>
+    const { createApp } = Vue;
+    createApp({
+      data() { return { msg: 'hello' } },
+      mounted() { },
+      methods: {
+        parentevent() { alert("parent") },
+        childevent() { alert("child") },
+        addOrder() { alert("구매");   },
+        addCart() { alert("장바구니");   }
+      }
+    }).mount("#app")
+  </script>
+</body>
+
+</html>

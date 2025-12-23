@@ -1,0 +1,15 @@
+[{
+  "name": "강아지 고급 사료",
+  "price": 1000,
+  "desc": "<b>건강</b>사료",
+  "img": "bag.png",
+  "cnt": 1,
+  "canCart": true
+}, {
+  "name": "고양이 사료",
+  "price": 65000,
+  "desc": "<b>건강</b>사료",
+  "img": "bag.png",
+  "cnt": 1,
+  "canCart": true
+}]

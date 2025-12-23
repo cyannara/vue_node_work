@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/vue-router@4.0.15/dist/vue-router.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue3-sfc-loader/dist/vue3-sfc-loader.js"></script>
+  <script src="load.js"></script>
+  <script src="router.js"></script>
+  <script src="https://unpkg.com/vuex@4.0.0/dist/vuex.global.js"></script>
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <ul class="nav">
+      <li class="nav-item"><router-link to="/" class="nav-link active" >main</router-link></li>
+      <li class="nav-item"><router-link to="/signin" class="nav-link" >signin</router-link></li>
+      <li class="nav-item"><router-link to="/productState" class="nav-link" >product</router-link></li>
+    </ul>
+
+    <div class="border p-5">
+      <router-view></router-view>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+  const {  createApp  } = Vue;
+  const {  createStore  } = Vuex;
+
+  // Create a new store instance.
+  // 공통의 상태를 공유하는 여러 컴포넌트 가 있는 경우 공유된 상태를 추출하고 이를 전역 싱글톤으로 관리
+  const store = createStore({
+    state () {
+      return {
+        count: 0
+      }
+    },
+    mutations: {
+      increment (state) {
+        state.count++
+      }
+    }
+  })
+
+  const app = createApp({
+    data() {  return { }     },
+    mounted() {  this.$router.push('/')     }
+  })
+  app.use(router).use(store);
+  app.mount('#app')
+  </script>
+</body>
+
+</html>

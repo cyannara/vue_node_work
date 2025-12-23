@@ -1,0 +1,26 @@
+<html>
+  <body>
+    <div id="app">
+      <h1>{{ count }}</h1>
+      <button @click="increment">Increment</button>
+    </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+      const { ref, createApp } = Vue
+      createApp({
+        setup() {
+          const count = ref(0)
+
+          const increment = () => {
+            count.value++
+          }
+
+          return {
+            count, 
+            increment
+          }
+        }
+      }).mount('#app')
+    </script>  
+  </body>
+</html>

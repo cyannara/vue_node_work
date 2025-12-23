@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>module</title>
+    <script src="https://unpkg.com/vue@next"></script>
+  </head>
+  <body>
+    <div id="app">
+        <ul>
+            <li>머스태시 {{ product }}</li>
+            <li>v-text <span v-text="product"></span> </li>
+            <li>v-html <span v-html="product"></span></li>
+            <li>v-bind <span v-bind:class="productname">{{ product }}</span></li>
+            <li>v-model <input v-model="productname"></li>
+        </ul>
+    </div>
+
+    <script type="module" src="module_vue.js"></script>
+  </body>
+</html>

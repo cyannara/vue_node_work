@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="todo.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+	<div id="myDIV" class="header">
+		<h2 style="margin: 5px">My To Do List</h2>
+		<input type="text" id="myInput" placeholder="Title..."> <span
+			class="addBtn">Add</span>
+	</div>
+
+	<ul id="myUL">
+		<li class="checked">Pay bills</li>
+	</ul>
+
+<script>
+//전체목록 조회 ajax
+$.ajax({
+	url : "../todoSelect",
+	method : "get",     //post
+	data : {contents : "ddd", no : 3},   // contents=dddd&no=3
+	dataType : "json",
+}).done( result => { 
+	 for(let content of result)  {
+			newElement(content);
+	 }
+})
+      //url  data  success  datatype
+/* $.get("../todoSelect", null, null, "json")
+ .done( result => { 
+	 for(let content of result)  {
+		newElement(content);
+	 }
+ }); */
+/* fetch("../todoSelect")
+.then(response=>response.json())
+.then(result=>{ for(let content of result)  {
+ 		newElement(content);
+	  }
+}) */
+
+
+// Add a "checked" symbol when clicking on a list item
+var list = document.querySelector('ul');
+list.addEventListener('click', function(ev) {
+ if (ev.target.tagName === 'LI') {
+	 
+    let no=ev.target.getAttribute('data-no');
+    let todoyn = ev.target.classList.contains("checked") ? 0 : 1;
+	
+    fetch("../todoUpdate",{method:'POST',
+				headers: {
+		     	 /* 'Content-Type': 'application/json' */
+		       'Content-Type': 'application/x-www-form-urlencoded',
+		    	},
+		    	body:"no="+no+"&todoyn="+todoyn
+    	
+    })
+    .then(response=>response.text())
+    .then(result=>{
+        ev.target.classList.toggle('checked');
+    });
+    
+  }
+}, false);
+
+document.getElementsByClassName("addBtn")[0].addEventListener('click',function(){
+	// 필드값 읽어서 널체크
+	let inputValue=document.getElementById("myInput").value;
+	if(inputValue===""){
+		alert("Nullpoint exeption");
+		return;	
+	}else{
+		fetch("../todoInsert",{
+			method:'POST',
+			headers: {
+			      /* 'Content-Type': 'application/json' */
+			       'Content-Type': 'application/x-www-form-urlencoded',
+			    	},
+			body : "contents=" + inputValue
+		})
+		.then(response=>response.json())
+		.then(result=>{
+		console.log(result);
+			newElement(result);
+		})
+		
+	}
+	// 널아니면 디비에 인서트
+	
+	// 셀렉트
+});
+
+
+
+// Create a new list item when clicking on the "Add" button
+function newElement(todo) {
+  var li = document.createElement("li");
+  li.innerHTML=todo.contents;
+  li.setAttribute('data-no',todo.no);
+  if(todo.todoyn ==1){
+  //식별번호 체크	 'checked' 클래스 추가  
+  li.className='checked';
+  }
+  document.getElementById("myUL").appendChild(li);
+
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  li.appendChild(span);
+
+  
+    span.onclick = function() {
+      var li = this.parentElement;
+      console.log(li);
+      var no=li.getAttribute('data-no');
+      console.log(no);
+      fetch("../todoDelete?no="+no)
+      .then(response=>response.text)
+      .then(result=>{
+		      li.remove();
+			alert("success");    	 
+      })
+       
+      
+    }
+}
+</script>
+
+</body>
+</html>

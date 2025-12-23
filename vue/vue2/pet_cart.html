@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="app.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <main>
+            <header>
+                <div class="navbar navbar-default">
+                    <div class="navbar-header">
+                        <h1 v-text="sitename"></h1>
+                    </div>
+                    <div class="nav navbar-nav navbar-right cart">
+                        <button type="button" class="btn btn-default btn-lg" v-on:click="showCheckout">
+                            <span class="glyphicon glyphicon-shopping-cart">{{cartItemCount}}</span>
+                            <span>체크아웃</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <div v-if="showProduct">
+                <div v-for="product in sortedProducts">
+                    <div class="row">
+                        <div class="col-md-5 col-md-offset-0" >
+                            <figure><img class="product" :src="product.image"></figure>
+                        </div>
+                        <div class="col-md-6 col-md-offset-0 description">
+                            <h1 v-text="product.title"></h1>
+                            <p v-html="product.description"></p>
+                            <p class="price">{{product.price | formatPrice}}</p>
+                            <button class="btn btn-primary btn-lg" 
+                                v-on:click="addToCart(product)"
+                                v-if="canAddToCart(product)">장바구니담기</button>
+                            <button disabled="true" class="btn btn-primary btn-lg"
+                                v-else>장바구니 담기</button>
+                            
+                            <span class="inventory-message"
+                                v-if="product.availableInventory - cartCount(product.id) === 0">품절!
+                            </span>
+                            <span class="inventory-message"
+                                v-else-if="product.availableInventory - cartCount(product.id) < 5">
+                              {{product.availableInventory - cartCount(product.id)}} 남았습니다!
+                            </span>
+                            <span class="inventory-message"
+                                v-else>지금 구매하세요! {{product.availableInventory}} {{cartCount(product.id)}}
+                            </span>
+                            <div class="rating">
+                                <span v-bind:class="{'rating-active': checkRating(n,product)}"
+                                    v-for="n in 5">☆
+                                </span>
+                            </div>                                
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else>
+                <div class="row">
+                    <form>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <strong>이름:</strong>
+                                <input v-model.trim="order.firstName" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <strong>성:</strong>
+                                <input v-model="order.lastName" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <strong>주소:</strong>
+                            </div>
+                            <div class="col-md-12">
+                                <input v-model.lazy="order.address" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <strong>도시:</strong>
+                            </div>
+                            <div class="col-md-12">
+                                <input v-model="order.city" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <strong>주:</strong>
+                                <select v-model="order.state" class="form-control">
+                                    <option disabled value="">주</option>
+                                    <option v-for="(state,key) in states" v-bind:value="key">{{state}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <strong>우편번호:</strong>
+                                <input type="number" v-model.number="order.zip" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col-md-12 verify">
+                        <pre>
+                            이름:{{order.firstName}}
+                            성:{{order.lastName}}
+                            주소:{{order.address}}
+                            도시:{{order.city}}
+                            우편번호:{{typeof(order.zip)}}
+                            주:{{order.state}}
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        var APP_LIFECYCLE_EVENTS = false;
+
+        var webstore = new Vue({
+            el : '#app',
+            // components: {'myComponent': Component},
+            data: {
+                sitename: 'vue.js 애완용품샵',
+                showProduct: true,
+                products : [],
+                product: {
+                    id:1001,
+                    title:'고양이사료,25',
+                    description:'당신의 고양이를 위한 <em>거부할 수 없는</em> 유기농 사료',
+                    price: 200000,
+                    image: './vs_git_01.png',
+                    availableInventory: 10,
+                    rating: 3
+                },
+                states: {
+                    AL: '알라바마',
+                    AK: '알래스카',
+                    AR: '애리조나',
+                    CA: '캘리포니아',
+                    NV: '네바다'
+                },
+                order: {
+                    firstName: '',
+                    lastName: '',
+                    address : '',
+                    city: '',
+                    zip: '',
+                    state: ''
+                },
+                cart: []
+            },
+            computed: {
+                cartItemCount(){
+                    return this.cart.length || '';
+                },
+                sortedProducts(){
+                    if(this.products.length > 0) {
+                        let productsArray = this.products.slice(0);
+                        function compare(a,b) {
+                            if(a.title.toLowerCase() > b.title.toLowerCase()){
+                                return 1;
+                            }else if(a.title.toLowerCase() < b.title.toLowerCase()){
+                                return -1;
+                            }
+                            return 0;
+                        }
+                        return productsArray.sort(compare);
+                    }
+                }
+            },
+            methods: {
+                addToCart(aProducr){
+                    this.cart.push(aProducr.id);
+                },
+                showCheckout(){
+                    this.showProduct = this.showProduct ? false : true;
+                },                
+                checkRating(n, myProduct) {
+                    return myProduct.rating - n >= 0;
+                },
+                canAddToCart(aProduct) {
+                    return aProduct.availableInventory > this.cartCount(aProduct.id);
+                },
+                cartCount(id) {
+                    let count = 0;
+                    for(var i = 0; i< this.cart.length;i++){
+                        if(this.cart[i] === id) {
+                            count++;
+                        }
+                    }
+                    return count;
+                }
+            },
+            filters: {
+                formatPrice: function(price) {
+                    if( !parseInt(price)){ return "";}
+                    if( price > 99999){
+                        var priceString = (price /100).toFixed(2);
+                        var priceArray = priceString.split("").reverse();
+                        var index = 3;
+                        while(priceArray.length>index+3){
+                            priceArray.splice(index+3,0,',');
+                            index += 4;
+                        }
+                        return "$" + priceArray.reverse().join("");
+                    } else {
+                        return "$"+(price/100).toFixed(2);
+                    }
+                }
+            },
+            beforeCreate : function() {
+                if(APP_LIFECYCLE_EVENTS) {
+                    console.log("beforeCreate");
+                }
+            },
+            created : function() {
+                if(APP_LIFECYCLE_EVENTS) {
+                    console.log("created");
+                }
+                axios.get('./products.json')
+                   .then( response => {
+                       this.products = response.data.products;
+                       console.log(this.products);
+                   })
+            },
+            beforeMount : function() {
+                if(APP_LIFECYCLE_EVENTS) {
+                    console.log("beforeMount");
+                }
+            },
+            mounted : function() {
+                if(APP_LIFECYCLE_EVENTS) {
+                    console.log("mounted");
+                }
+            },
+            beforeUpdate : function() {
+                if(APP_LIFECYCLE_EVENTS) {
+                    console.log("beforeUpdate");
+                }
+            },
+            updated : function() {
+                if(APP_LIFECYCLE_EVENTS) {
+                    console.log("updated");
+                }
+            },
+            beforeDestroy : function() {
+                if(APP_LIFECYCLE_EVENTS) {
+                    console.log("beforeDestroy");
+                }
+            },
+            destroyed : function() {
+                if(APP_LIFECYCLE_EVENTS) {
+                    console.log("destroyed");
+                }
+            }
+        });
+    </script>
+</body>
+</html>

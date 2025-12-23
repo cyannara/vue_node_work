@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/http-vue-loader"></script>
+    <script src="https://unpkg.com/vue-router@3.0.0/dist/vue-router.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="my-app">
+      <router-link to="/login">login</router-link>
+      <router-link to="/signin">sign in</router-link>
+      <router-view></router-view>
+    </div>
+
+    <script type="text/javascript">
+      const router = new VueRouter({
+        routes : [
+          { path: '/login', component: httpVueLoader('login.vue')},
+          { path: '/signin', component: httpVueLoader('signin.vue')},
+        ]
+      }) 
+      new Vue({
+        el: '#my-app',
+        router
+      });
+    </script>
+  </body>
+</html>

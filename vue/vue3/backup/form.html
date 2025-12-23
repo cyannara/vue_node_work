@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+    <div id="app">
+        <label>이름 : </label>
+        <input type="text" v-model="result.name" placeholder="이름" /><br />
+
+        <label>나이 : </label>
+        <input type="number" v-model="result.age" placeholder="나이" /><br />
+
+        <label>성별 : </label>
+        <label>남성</label><input type="radio" name="gender" v-model="result.gender" value="male" />
+        <label>여성</label><input type="radio" name="gender" v-model="result.gender" value="female"/><br />
+
+        <label>취미 : </label>
+        <span v-for="hobby in hobby_options" :key="hobby">
+          <label>{{ hobby }}</label>
+          <input type="checkbox" v-model="result.hobby" v-bind:value="hobby" /> 
+        </span><br />
+
+        <label>비번 : </label>
+        <input type="password" v-model="result.password" /><br />
+        
+        <label>국가 : </label>
+        <select v-model="result.country">
+          <option v-for="country in country_options" :key="country">
+            {{ country }}
+          </option></select><br />
+        <div>
+          <h3>결과</h3>
+          <hr />
+          {{ result }}
+        </div>
+    </div>
+    <script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                hobby_options : ['게임','볼링','영화'],
+                country_options : ['한국','미국','중국'],
+                result: {
+                    name: '',
+                    age: '',
+                    gender : '',
+                    hobby: [],
+                    password: '',
+                    country: ''
+                }
+            }
+        }
+        ,
+        computed: {        }
+        , 
+        methods :{        }
+        
+    })    
+    //mount vue
+    const mountedApp = app.mount('#app')
+    </script>
+</body>
+</html>
