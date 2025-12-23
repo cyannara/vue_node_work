@@ -1,4 +1,4 @@
-https://github.com/cyannara/webwork/js_review/README.md
+https://github.com/cyannara/vue_node_work/js_review/README.md
 
 1. board 테이블 생성
 	id       pk, nn, ai
