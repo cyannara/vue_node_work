@@ -5,7 +5,7 @@
 3. Naive UI
 4. [PrimeVue](https://primevue.org/templates)
 5. [sakai](https://sakai.primevue.org/)
-6. Argon
+6. [Argon](https://demos.creative-tim.com/vue-argon-design-system/documentation/)
 7. Quasar
 8. BootstrapVue 3
 9. Tailwind + Headless UI
