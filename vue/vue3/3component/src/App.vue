@@ -17,6 +17,7 @@ import HelloWorld from "./components/HelloWorld.vue";
         |
         <RouterLink to="/vuetify">vuetify</RouterLink> |
         <RouterLink to="/store">store</RouterLink> |
+        <RouterLink to="/alert">alert</RouterLink> |
         <!--<RouterLink to="/bootstrap">bootstrap</RouterLink> |-->
       </nav>
     </div>
