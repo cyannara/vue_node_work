@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "axios": "^1.7.7",
+    "bootstrap": "^5.2.3",
     "core-js": "^3.8.3",
     "create-vue": "^3.12.2",
     "deploy": "^1.0.3",
     "gh-pages": "^6.3.0",
     "path": "^0.12.7",
+    "pinia": "^3.0.4",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.5.4",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"
   },
