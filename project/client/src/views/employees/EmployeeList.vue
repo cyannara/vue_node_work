@@ -19,7 +19,7 @@ function rowSelect(e) {
 </script>
 
 <template>
-  <div>목록</div>
+  <div>사원목록</div>
   <DataTable :value="list" @rowClick="rowSelect">
     <Column field="first_name" header="First" />
     <Column field="last_name" header="Last" />
