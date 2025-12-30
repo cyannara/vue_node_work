@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <HeaderComponent />
     <router-view :key="$route.fullPath" />
     <FooterComponent />
